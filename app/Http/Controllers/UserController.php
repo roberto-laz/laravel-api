@@ -14,19 +14,32 @@ class UserController extends Controller
         return response()->json(compact('users'));
     }
 
+    public function create(Request $request): JsonResponse
+    {
+        $message = User::create($request->all()) ?
+            "User created successfully" :
+            "An error has ocurred when creating a new user";
+
+        return response()->json($message);
+    }
+
     public function find(int $id): JsonResponse
     {
         $user = User::find($id);
         return response()->json(compact('user'));
     }
 
-    public function delete(int $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
-        $user = User::destroy($id);
-        //return response()->json($user ? "User deleted" : "User not found");
-        $message = "User not found";
-        if ($user) $message = "User deleted";
+        $message = User::find($id)->update($request->all()) ?
+            "User updated" : "User not found";
         return response()->json($message);
 
+    }
+
+    public function delete(int $id): JsonResponse
+    {
+        $message = User::destroy($id) ? "User deleted" : "User not found";
+        return response()->json($message);
     }
 }
